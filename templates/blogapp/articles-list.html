@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    List Articles
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <form method="post" action="{% url 'blogapp:article_add' %}">
+        {% csrf_token %}
+        <button type="submit">Create Article
+        </button>
+    {% endif %}
+</form>
+
+    <h1>Articles:</h1>
+    {% for article in articles %}
+        <div>
+            <a href="{% url 'blogapp:article' pk=article.pk %}"><h2>{{ article.title }}</h2></a>
+            <p>Published: {{ article.pub_date }}</p>
+            <p>Author: {{ article.author.username }}</p>
+        </div>
+
+    {% empty %}
+        <h3>There are no published articles yet</h3>
+    {% endfor %}
+{% endblock %}

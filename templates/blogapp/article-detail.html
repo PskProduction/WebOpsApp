@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Article {{ object.title }}
+{% endblock %}
+
+{% block content %}
+    <h1> Article</h1>
+    <div>
+        <p>Title: {{ article.title }} </p>
+        <p>Content: {{ article.content }} </p>
+        <p>Published: {{ article.pub_date }}</p>
+    </div>
+
+    {% if user == object.author or user.is_staff %}
+        <a href="{% url 'blogapp:article_update' pk=article.pk %}">Update Article</a>
+    {% endif %}
+
+    {% if user == object.author or user.is_staff %}
+        <form method="post" action="{% url 'blogapp:article_delete' pk=article.pk %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" onclick="return confirm('Are you sure you want to delete the entry?')">Delete Article
+            </button>
+        </form>
+    {% endif %}
+
+    <div>
+        <a href="{% url 'blogapp:home' %}">Back to Articles List</a>
+    </div>
+{% endblock %}
