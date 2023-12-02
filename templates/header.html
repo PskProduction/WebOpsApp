@@ -1,0 +1,8 @@
+{% block header %}
+    {% if user.is_authenticated %}
+        <a href="{% url 'accountapp:logout' %}">Logout</a>
+    {% else %}
+        <a href="{% url 'accountapp:login' %}">Login</a>
+        <a href="{% url 'accountapp:registration' %}">Registration</a>
+    {% endif %}
+{% endblock %}
