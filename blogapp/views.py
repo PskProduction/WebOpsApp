@@ -1,11 +1,11 @@
 import aiohttp
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
 from blogapp.models import Article
 
@@ -44,23 +44,30 @@ class UpdateArticleView(LoginRequiredMixin, UpdateView):
     fields = ['title', 'content']
 
     def put(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        user = self.request.user
+        article_id = kwargs.get('pk')
+        article = get_object_or_404(Article, id=article_id)
+        user = request.user
         if user == self.object.author or user.is_staff:
-            self.object.update()
+            article.update()
             return redirect(request.META["HTTP_REFERER"])
+        else:
+            return HttpResponseForbidden("You don't have permission to update this article.")
 
 
-class DeleteArticleView(LoginRequiredMixin, DeleteView):
-    model = Article
+class DeleteArticleView(LoginRequiredMixin, View):
     success_url = reverse_lazy('blogapp:home')
 
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        user = self.request.user
-        if user == self.object.author or user.is_staff:
-            self.object.delete()
+    def post(self, request, *args, **kwargs):
+        article_id = kwargs.get('pk')
+        article = get_object_or_404(Article, id=article_id)
+        user = request.user
+
+        if user == article.author or user.is_staff:
+            article.delete()
+
             return HttpResponseRedirect(self.success_url)
+        else:
+            return HttpResponseForbidden("You don't have permission to delete this article.")
 
 
 async def get_data_from_api():
