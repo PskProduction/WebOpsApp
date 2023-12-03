@@ -6,8 +6,8 @@ from .models import Article
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
     list_display = [
-        'title',
-        'author',
-        'content',
-        'pub_date',
+        "title",
+        "author",
+        "content",
+        "pub_date",
     ]

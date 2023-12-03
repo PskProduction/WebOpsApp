@@ -4,37 +4,35 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
 
 class LoginUserForm(AuthenticationForm):
-    username = forms.CharField(label="Логин",
-                    widget=forms.TextInput(attrs={'class': 'form-input'}))
-    password = forms.CharField(label="Пароль",
-                    widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+    username = forms.CharField(label="Логин", widget=forms.TextInput(attrs={"class": "form-input"}))
+    password = forms.CharField(label="Пароль", widget=forms.PasswordInput(attrs={"class": "form-input"}))
 
     class Meta:
         model = get_user_model()
-        fields = ['username', 'password']
+        fields = ["username", "password"]
 
 
 class RegisterUserForm(UserCreationForm):
-    username = forms.CharField(label="Login", widget=forms.TextInput(attrs={'class': 'form-input'}))
-    password1 = forms.CharField(label="Password", widget=forms.PasswordInput(attrs={'class': 'form-input'}))
-    password2 = forms.CharField(label="Repeat password", widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+    username = forms.CharField(label="Login", widget=forms.TextInput(attrs={"class": "form-input"}))
+    password1 = forms.CharField(label="Password", widget=forms.PasswordInput(attrs={"class": "form-input"}))
+    password2 = forms.CharField(label="Repeat password", widget=forms.PasswordInput(attrs={"class": "form-input"}))
 
     class Meta:
         model = get_user_model()
-        fields = ['username', 'email', 'first_name', 'last_name', 'password1', 'password2']
+        fields = ["username", "email", "first_name", "last_name", "password1", "password2"]
         labels = {
-            'email': 'E-mail',
-            'first_name': "Name",
-            'last_name': "Last Name",
+            "email": "E-mail",
+            "first_name": "Name",
+            "last_name": "Last Name",
         }
         widgets = {
-            'email': forms.TextInput(attrs={'class': 'form-input'}),
-            'first_name': forms.TextInput(attrs={'class': 'form-input'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-input'}),
+            "email": forms.TextInput(attrs={"class": "form-input"}),
+            "first_name": forms.TextInput(attrs={"class": "form-input"}),
+            "last_name": forms.TextInput(attrs={"class": "form-input"}),
         }
 
     def clean_email(self):
-        email = self.cleaned_data['email']
+        email = self.cleaned_data["email"]
         if get_user_model().objects.filter(email=email).exists():
             raise forms.ValidationError("This email already exists!")
         return email
