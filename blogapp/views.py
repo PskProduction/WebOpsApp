@@ -1,7 +1,10 @@
+import aiohttp
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from blogapp.models import Article
@@ -58,3 +61,18 @@ class DeleteArticleView(LoginRequiredMixin, DeleteView):
         if user == self.object.author or user.is_staff:
             self.object.delete()
             return HttpResponseRedirect(self.success_url)
+
+
+async def get_data_from_api():
+    async with aiohttp.ClientSession() as session:
+        async with session.get('https://restcountries.com/v3.1/all') as response:
+            data = await response.json()
+            return data
+
+
+class CountriesView(View):
+    template_name = 'blogapp/country_list.html'
+
+    async def get(self, request):
+        data = await get_data_from_api()
+        return render(request, 'blogapp/country_list.html', {'data': data})
